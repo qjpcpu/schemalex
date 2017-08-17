@@ -8,10 +8,10 @@ import (
 	"reflect"
 
 	"github.com/deckarep/golang-set"
-	"github.com/schemalex/schemalex"
-	"github.com/schemalex/schemalex/format"
-	"github.com/schemalex/schemalex/internal/errors"
-	"github.com/schemalex/schemalex/model"
+	"github.com/qjpcpu/schemalex"
+	"github.com/qjpcpu/schemalex/format"
+	"github.com/qjpcpu/schemalex/internal/errors"
+	"github.com/qjpcpu/schemalex/model"
 )
 
 // Option is a generic interface for objects that passes

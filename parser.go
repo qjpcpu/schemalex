@@ -3,8 +3,8 @@ package schemalex
 import (
 	"io/ioutil"
 
-	"github.com/schemalex/schemalex/internal/errors"
-	"github.com/schemalex/schemalex/model"
+	"github.com/qjpcpu/schemalex/internal/errors"
+	"github.com/qjpcpu/schemalex/model"
 	"golang.org/x/net/context"
 )
 
@@ -33,6 +33,7 @@ const (
 	coloptFlagChar            = coloptSize | coloptBinary | coloptCharacterSet | coloptCollate
 	coloptFlagBinary          = coloptSize
 )
+
 // Parser is responsible to parse a set of SQL statements
 type Parser struct{}
 
@@ -618,6 +619,8 @@ func (p *Parser) parseCreateTableOptions(ctx *parseCtx, table model.Table) error
 				name = "DEFAULT CHARACTER SET"
 			case COLLATE:
 				name = "DEFAULT COLLATE"
+			case CHARSET:
+				name = "DEFAULT CHARSET"
 			default:
 				return newParseError(ctx, t, "expected CHARACTER or COLLATE")
 			}
@@ -673,19 +676,19 @@ func (p *Parser) parseCreateTableOptions(ctx *parseCtx, table model.Table) error
 				return err
 			}
 		case KEY_BLOCK_SIZE:
-			if err := p.parseCreateTableOptionValue(ctx, table, "KEY_BLOCK_SIZE",NUMBER); err != nil {
+			if err := p.parseCreateTableOptionValue(ctx, table, "KEY_BLOCK_SIZE", NUMBER); err != nil {
 				return err
 			}
 		case MAX_ROWS:
-			if err := p.parseCreateTableOptionValue(ctx, table, "MAX_ROWS",NUMBER); err != nil {
+			if err := p.parseCreateTableOptionValue(ctx, table, "MAX_ROWS", NUMBER); err != nil {
 				return err
 			}
 		case MIN_ROWS:
-			if err := p.parseCreateTableOptionValue(ctx, table, "MIN_ROWS",NUMBER); err != nil {
+			if err := p.parseCreateTableOptionValue(ctx, table, "MIN_ROWS", NUMBER); err != nil {
 				return err
 			}
 		case PACK_KEYS:
-			if err := p.parseCreateTableOptionValue(ctx, table, "PACK_KEYS",NUMBER, IDENT); err != nil {
+			if err := p.parseCreateTableOptionValue(ctx, table, "PACK_KEYS", NUMBER, IDENT); err != nil {
 				return err
 			}
 		case PASSWORD:
@@ -697,15 +700,15 @@ func (p *Parser) parseCreateTableOptions(ctx *parseCtx, table model.Table) error
 				return err
 			}
 		case STATS_AUTO_RECALC:
-			if err := p.parseCreateTableOptionValue(ctx, table, "STATS_AUTO_RECALC",NUMBER, DEFAULT); err != nil {
+			if err := p.parseCreateTableOptionValue(ctx, table, "STATS_AUTO_RECALC", NUMBER, DEFAULT); err != nil {
 				return err
 			}
 		case STATS_PERSISTENT:
-			if err := p.parseCreateTableOptionValue(ctx, table, "STATS_PERSISTENT",NUMBER, DEFAULT); err != nil {
+			if err := p.parseCreateTableOptionValue(ctx, table, "STATS_PERSISTENT", NUMBER, DEFAULT); err != nil {
 				return err
 			}
 		case STATS_SAMPLE_PAGES:
-			if err := p.parseCreateTableOptionValue(ctx, table, "STATS_SAMPLE_PAGES",NUMBER); err != nil {
+			if err := p.parseCreateTableOptionValue(ctx, table, "STATS_SAMPLE_PAGES", NUMBER); err != nil {
 				return err
 			}
 		case TABLESPACE:
@@ -1189,6 +1192,12 @@ OUTER:
 		case RPAREN:
 			break OUTER
 		default:
+			if t.Type == LPAREN && ctx.peek().Type == NUMBER {
+				ctx.next()
+				ctx.next()
+				ctx.next()
+				break OUTER
+			}
 			return newParseError(ctx, t, "should , or )")
 		}
 	}

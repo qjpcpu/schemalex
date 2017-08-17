@@ -5,7 +5,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/schemalex/schemalex/internal/errors"
+	"github.com/qjpcpu/schemalex/internal/errors"
 	"golang.org/x/net/context"
 )
 

@@ -3,8 +3,8 @@ package model
 import (
 	"bytes"
 
-	"github.com/schemalex/schemalex/internal/errors"
-	"github.com/schemalex/schemalex/internal/util"
+	"github.com/qjpcpu/schemalex/internal/errors"
+	"github.com/qjpcpu/schemalex/internal/util"
 )
 
 // NewReference creates a reference constraint

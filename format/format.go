@@ -5,9 +5,9 @@ import (
 	"io"
 	"strconv"
 
-	"github.com/schemalex/schemalex/internal/errors"
-	"github.com/schemalex/schemalex/internal/util"
-	"github.com/schemalex/schemalex/model"
+	"github.com/qjpcpu/schemalex/internal/errors"
+	"github.com/qjpcpu/schemalex/internal/util"
+	"github.com/qjpcpu/schemalex/model"
 )
 
 // SQL takes an arbitrary `model.*` object and formats it as SQL,

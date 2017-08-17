@@ -54,6 +54,7 @@ const (
 	CASCADE
 	CHAR
 	CHARACTER
+	CHARSET
 	CHECK
 	CHECKSUM
 	COLLATE
@@ -159,6 +160,7 @@ var keywordIdentMap = map[string]TokenType{
 	"CASCADE":            CASCADE,
 	"CHAR":               CHAR,
 	"CHARACTER":          CHARACTER,
+	"CHARSET":            CHARSET,
 	"CHECK":              CHECK,
 	"CHECKSUM":           CHECKSUM,
 	"COLLATE":            COLLATE,

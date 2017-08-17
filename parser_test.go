@@ -7,7 +7,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/schemalex/schemalex/format"
+	"github.com/qjpcpu/schemalex/format"
 	"github.com/stretchr/testify/assert"
 )
 
