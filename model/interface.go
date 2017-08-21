@@ -13,6 +13,11 @@ type maybeString struct {
 	Value string
 }
 
+type onValue struct {
+	Valid bool
+	Value string
+}
+
 // ColumnContainer is the interface for objects that can contain
 // column names
 type ColumnContainer interface {
@@ -217,6 +222,9 @@ type TableColumn interface {
 	Default() string
 	IsQuotedDefault() bool
 	SetDefault(string, bool)
+	HasOnValue() bool
+	SetOnValue(string)
+	OnValue() string
 	HasComment() bool
 	Comment() string
 	SetComment(string)
@@ -254,6 +262,7 @@ type tablecol struct {
 	charset      maybeString
 	collation    maybeString
 	defaultValue defaultValue
+	onValue      onValue
 	comment      maybeString
 	autoincr     bool
 	binary       bool

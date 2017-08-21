@@ -48,6 +48,10 @@ func (t *tablecol) Comment() string {
 	return t.comment.Value
 }
 
+func (t *tablecol) OnValue() string {
+	return t.onValue.Value
+}
+
 func (t *tablecol) Default() string {
 	return t.defaultValue.Value
 }
@@ -62,6 +66,10 @@ func (t *tablecol) HasCollation() bool {
 
 func (t *tablecol) HasComment() bool {
 	return t.comment.Valid
+}
+
+func (t *tablecol) HasOnValue() bool {
+	return t.onValue.Valid
 }
 
 func (t *tablecol) HasDefault() bool {
@@ -137,6 +145,11 @@ func (t *tablecol) SetDefault(v string, quoted bool) {
 	t.defaultValue.Valid = true
 	t.defaultValue.Value = v
 	t.defaultValue.Quoted = quoted
+}
+
+func (t *tablecol) SetOnValue(v string) {
+	t.onValue.Valid = true
+	t.onValue.Value = v
 }
 
 func (t *tablecol) SetKey(v bool) {

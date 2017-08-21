@@ -839,6 +839,20 @@ func (p *Parser) parseColumnOption(ctx *parseCtx, col model.TableColumn, f int) 
 			default:
 				return newParseError(ctx, t, "should IDENT, SINGLE_QUOTE_IDENT, DOUBLE_QUOTE_IDENT, NUMBER, CURRENT_TIMESTAMP, NULL")
 			}
+		case ON:
+			ctx.skipWhiteSpaces()
+			switch t := ctx.next(); t.Type {
+			case UPDATE, CREATE:
+				ctx.skipWhiteSpaces()
+				nextT := ctx.next()
+				if nextT.Type == CURRENT_TIMESTAMP {
+					col.SetOnValue(t.Value + " " + nextT.Value)
+				} else {
+					return newParseError(ctx, nextT, "should ON UPDATE CURRENT_TIMESTAMP")
+				}
+			default:
+				return newParseError(ctx, t, "should UPDATE, CREATE")
+			}
 		case AUTO_INCREMENT:
 			if !check(coloptAutoIncrement) {
 				return newParseError(ctx, t, "cant apply AUTO_INCREMENT")
