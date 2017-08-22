@@ -1,11 +1,10 @@
 package schemalex
 
 import (
-	"io/ioutil"
-
 	"github.com/qjpcpu/schemalex/internal/errors"
 	"github.com/qjpcpu/schemalex/model"
 	"golang.org/x/net/context"
+	"io/ioutil"
 )
 
 const (
@@ -898,6 +897,18 @@ func (p *Parser) parseColumnOption(ctx *parseCtx, col model.TableColumn, f int) 
 		case RPAREN:
 			ctx.rewind()
 			return nil
+		case CHARACTER:
+			ctx.skipWhiteSpaces()
+			if t := ctx.next(); t.Type != SET {
+				return newParseError(ctx, t, "expected SET")
+			}
+			ctx.skipWhiteSpaces()
+			t = ctx.next()
+			col.SetCharset(t.Value)
+		case COLLATE:
+			ctx.skipWhiteSpaces()
+			t := ctx.next()
+			col.SetCollation(t.Value)
 		default:
 			return newParseError(ctx, t, "unexpected column options")
 		}
@@ -950,6 +961,24 @@ func (p *Parser) parseColumnIndexUniqueKey(ctx *parseCtx, index model.Index) err
 		return err
 	}
 
+EXTRA:
+	for {
+		ctx.skipWhiteSpaces()
+		t := ctx.peek()
+		switch t.Type {
+		case USING:
+			if err := p.parseColumnIndexTypeUsing(ctx, index); err != nil {
+				return err
+			}
+		case COMMENT:
+			if err := p.parseColumnIndexComment(ctx, index); err != nil {
+				return err
+			}
+		default:
+			break EXTRA
+		}
+	}
+
 	return nil
 }
 
@@ -970,6 +999,24 @@ func (p *Parser) parseColumnIndexKey(ctx *parseCtx, index model.Index) error {
 
 	if err := p.parseColumnIndexColName(ctx, index); err != nil {
 		return err
+	}
+
+EXTRA:
+	for {
+		ctx.skipWhiteSpaces()
+		t := ctx.peek()
+		switch t.Type {
+		case USING:
+			if err := p.parseColumnIndexTypeUsing(ctx, index); err != nil {
+				return err
+			}
+		case COMMENT:
+			if err := p.parseColumnIndexComment(ctx, index); err != nil {
+				return err
+			}
+		default:
+			break EXTRA
+		}
 	}
 
 	return nil
@@ -1168,6 +1215,16 @@ func (p *Parser) parseColumnIndexTypeUsing(ctx *parseCtx, index model.Index) err
 	return nil
 }
 
+func (p *Parser) parseColumnIndexComment(ctx *parseCtx, index model.Index) error {
+	if t := ctx.next(); t.Type != COMMENT {
+		return errors.New(`expected COMMENT`)
+	}
+
+	ctx.skipWhiteSpaces()
+	index.SetComment(ctx.next().Value)
+	return nil
+}
+
 func (p *Parser) parseColumnIndexType(ctx *parseCtx, index model.Index) error {
 	ctx.skipWhiteSpaces()
 	if t := ctx.peek(); t.Type == USING {
@@ -1209,8 +1266,13 @@ OUTER:
 			if t.Type == LPAREN && ctx.peek().Type == NUMBER {
 				ctx.next()
 				ctx.next()
-				ctx.next()
-				break OUTER
+				t = ctx.next()
+				ctx.skipWhiteSpaces()
+				if t.Type == COMMA {
+					continue
+				} else {
+					break OUTER
+				}
 			}
 			return newParseError(ctx, t, "should , or )")
 		}

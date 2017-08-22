@@ -44,6 +44,11 @@ func (t *tablecol) Collation() string {
 	return t.collation.Value
 }
 
+func (t *tablecol) SetCollation(v string) {
+	t.collation.Valid = true
+	t.collation.Value = v
+}
+
 func (t *tablecol) Comment() string {
 	return t.comment.Value
 }
@@ -182,4 +187,9 @@ func (t *tablecol) SetUnsigned(v bool) {
 
 func (t *tablecol) SetZeroFill(v bool) {
 	t.zerofill = v
+}
+
+func (t *tablecol) SetCharset(v string) {
+	t.charset.Valid = true
+	t.charset.Value = v
 }

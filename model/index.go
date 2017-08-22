@@ -88,6 +88,10 @@ func (stmt *index) SetType(typ IndexType) {
 	stmt.typ = typ
 }
 
+func (stmt *index) SetComment(v string) {
+	stmt.comemnt = v
+}
+
 func (stmt *index) IsBtree() bool {
 	return stmt.typ == IndexTypeBtree
 }

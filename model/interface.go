@@ -37,6 +37,7 @@ type Index interface {
 	SetReference(Reference)
 	SetSymbol(string)
 	SetType(IndexType)
+	SetComment(string)
 	SetName(string)
 	Symbol() string
 	IsBtree() bool
@@ -79,6 +80,7 @@ type index struct {
 	name    maybeString
 	typ     IndexType
 	table   string
+	comemnt string
 	columns []string
 	// TODO Options.
 	reference Reference
@@ -216,7 +218,9 @@ type TableColumn interface {
 	SetLength(Length)
 	HasCharacterSet() bool
 	CharacterSet() string
+	SetCharset(string)
 	HasCollation() bool
+	SetCollation(string)
 	Collation() string
 	HasDefault() bool
 	Default() string
