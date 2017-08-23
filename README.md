@@ -62,7 +62,7 @@ package schemalex_test
 import (
 	"os"
 
-	"github.com/schemalex/schemalex/diff"
+	"github.com/qjpcpu/schemalex/diff"
 )
 
 func Example() {
@@ -100,6 +100,10 @@ CREATE TABLE fuga (
 	// COMMIT;
 }
 ```
+
+## Fix
+
+* fix some bugs of table creation parser.
 
 ## SEE ALSO
 
