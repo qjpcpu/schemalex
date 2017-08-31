@@ -34,6 +34,16 @@ func (t *table) AddColumn(v TableColumn) {
 }
 
 func (t *table) AddIndex(v Index) {
+	if v.IsPrimaryKey() {
+		pcols := v.Columns()
+		for pcol := range pcols {
+			for i, col := range t.columns {
+				if col.Name() == pcol {
+					t.columns[i].SetPrimary(true)
+				}
+			}
+		}
+	}
 	t.indexes = append(t.indexes, v)
 }
 
